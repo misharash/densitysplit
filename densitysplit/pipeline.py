@@ -251,8 +251,7 @@ class DensitySplit:
         self.density = D1D2 - D1R2
         mask = D1R2 > 0
         self.density[mask] /= D1R2[mask]
-        self.density[~mask] = 0
-        masked_fraction = 1 - np.sum(mask) / len(mask)
+        self.density[~mask] = np.nan
         self.sampling_positions = sampling_positions
         return self.density
 
