@@ -198,7 +198,7 @@ class DensitySplit:
                     f'is not provided, need to set sampling to "data" or "randoms"')
         return self.density
 
-    def get_density_paircount(self, smooth_radius, sampling_positions, filter_shape='Tophat', nthreads=1):
+    def get_density_paircount(self, smooth_radius, sampling_positions, sampling_weights=None, filter_shape='Tophat', nthreads=1):
         """
         Get the overdensity field using pair counting.
 
@@ -208,6 +208,9 @@ class DensitySplit:
             Radius of the smoothing filter.
         sampling_positions : array_like
             Positions where the density field should be sampled.
+        sampling_weights : None or array_like
+            Weights for the sampling positions. If set, self-counts are added to DD.
+            Without self-counts addition, weights of the sampling points are not relevant.
         filter_shape : str, optional
             Shape of the smoothing filter.
         nthreads : int, optional
@@ -248,6 +251,8 @@ class DensitySplit:
             bin_volume = 4/3 * np.pi * smooth_radius ** 3
             mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
+        if sampling_weights is not None:
+            D1D2 += sampling_weights # this should work for both tophat and gaussian
         self.density = D1D2 - D1R2
         mask = D1R2 > 0
         self.density[mask] /= D1R2[mask]
