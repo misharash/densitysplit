@@ -251,6 +251,7 @@ class DensitySplit:
             bin_volume = 4/3 * np.pi * smooth_radius ** 3
             mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
+            if filter_shape.lower() == 'gaussian': D1R2 *= smooth_radius**3 * (2 * np.pi)**1.5 # Gaussian weight is not normalized, correct for this here
         if sampling_weights is not None:
             D1D2 += sampling_weights # this should work for both tophat and gaussian
         self.density = D1D2 - D1R2

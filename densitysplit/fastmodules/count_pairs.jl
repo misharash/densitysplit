@@ -12,7 +12,7 @@ end
 
 function _count_pairs_gaussian!(i, j, d2, weights1, weights2, smooth_radius, counts)
     if d2 > 0
-        gaussian_weight = exp.(-d2 / (2 * smooth_radius^2)) # normalization cancels out in D1D2/D1R2
+        gaussian_weight = exp.(-d2 / (2 * smooth_radius^2)) # normalization cancels out in D1D2/D1R2, except with analytic counts in cubic boxes
         counts[i] += weights1[i] * weights2[j] * gaussian_weight
     end
     return counts
