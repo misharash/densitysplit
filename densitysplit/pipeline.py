@@ -147,6 +147,7 @@ class DensitySplit:
         sampling_positions : array_like
             Positions where the density field was sampled.
         """
+        if not hasattr(filters, filter_shape): raise ValueError(f"Filter shape not implemented, use TopHat or Gaussian")
         self.cellsize = cellsize
         self.boxpad = boxpad
         self.resampler = resampler
@@ -221,6 +222,7 @@ class DensitySplit:
         density : array_like
             Density field at the sampling positions.
         """
+        if filter_shape.lower() not in ('tophat', 'gaussian'): raise ValueError("Filter shape not implemented, use TopHat or Gaussian")
         from julia.api import Julia
         from os import path, environ
         environ['JULIA_NUM_THREADS'] = f'{nthreads}'
