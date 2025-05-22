@@ -250,10 +250,9 @@ class DensitySplit:
             Main.boxsize = self.boxsize
             Main.smooth_radius = smooth_radius
             D1D2 = jl.eval(f"count_pairs_box_{filter_shape.lower()}(positions1, positions2, weights1, weights2, boxsize, smooth_radius)")
-            bin_volume = 4/3 * np.pi * smooth_radius ** 3
+            bin_volume = {'tophat': 4/3 * np.pi, 'gaussian': (2 * np.pi)**1.5}[filter_shape.lower()] * smooth_radius ** 3 # in Gaussian case, this is the integral of the non-normalized Gaussian kernel from the counting function, neglecting the cutoff at 3 sigma radius
             mean_density = np.sum(self.data_weights) / (self.boxsize ** 3)
             D1R2 = bin_volume * mean_density * np.ones(len(sampling_positions))
-            if filter_shape.lower() == 'gaussian': D1R2 *= smooth_radius**3 * (2 * np.pi)**1.5 # Gaussian weight is not normalized, correct for this here
         if sampling_weights is not None:
             D1D2 += sampling_weights # this should work for both tophat and gaussian
         self.density = D1D2 - D1R2
